@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiagVeto — Diagnostic vétérinaire gratuit en 2 minutes</title>
+  <meta name="description" content="Votre animal est malade ? Obtenez un premier avis vétérinaire en 2 minutes. Gratuit, sans inscription, disponible 24h/24.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #0076CC; --blue-dark: #005599; --blue-light: #EBF5FF;
+      --blue-border: #C5DFF5; --white: #ffffff; --bg: #F7FAFD;
+      --text-blue: #0A3F6E; --text-mid: #2C6090; --text-muted: #6B8FAD;
+      --radius: 14px; --radius-sm: 10px;
+    }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text-blue); }
+    .site { max-width: 780px; margin: 0 auto; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* NAV */
+    nav { background: var(--white); border-bottom: 1.5px solid var(--blue-border); padding: 0 1.5rem; height: 62px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .logo { font-size: 21px; font-weight: 900; color: var(--blue); letter-spacing: -0.5px; cursor: pointer; }
+    .logo span { color: var(--text-muted); font-weight: 700; }
+    .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+    .nav-link { font-size: 13px; font-weight: 700; color: var(--text-mid); text-decoration: none; transition: color 0.15s; cursor: pointer; }
+    .nav-link.active { color: var(--blue); }
+    .nav-cta { background: var(--blue); color: white; border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 3px 0 var(--blue-dark); white-space: nowrap; }
+
+    /* HERO */
+    .hero { background: var(--white); border-bottom: 1.5px solid var(--blue-border); padding: 3.5rem 2rem 3rem; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 7px; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 20px; margin-bottom: 1.25rem; }
+    .badge-dot { width: 7px; height: 7px; background: var(--blue); border-radius: 50%; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero h1 { font-size: 36px; font-weight: 900; color: var(--text-blue); line-height: 1.2; margin-bottom: 0.85rem; letter-spacing: -0.8px; }
+    .hero h1 span { color: var(--blue); }
+    .hero p { font-size: 15px; color: var(--text-muted); font-weight: 600; max-width: 430px; margin: 0 auto 2rem; line-height: 1.65; }
+    .hero-cta { display: inline-flex; align-items: center; background: var(--blue); color: white; font-size: 17px; font-weight: 900; padding: 18px 38px; border-radius: var(--radius); border: none; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 6px 0 var(--blue-dark), 0 8px 20px rgba(0,118,204,0.25); transition: transform 0.1s, box-shadow 0.1s; }
+    .hero-cta:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--blue-dark); }
+    .hero-cta:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--blue-dark); }
+    .hero-note { margin-top: 1.5rem; font-size: 12px; color: var(--text-muted); font-weight: 700; }
+
+    /* STATS */
+    .stats-row { background: var(--white); border-bottom: 1.5px solid var(--blue-border); display: grid; grid-template-columns: repeat(3, 1fr); }
+    .stat-item { padding: 1.25rem 1rem; text-align: center; border-right: 1.5px solid var(--blue-border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-size: 28px; font-weight: 900; color: var(--blue); line-height: 1; margin-bottom: 3px; }
+    .stat-lbl { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+
+    .info-strip { background: var(--blue-light); border-bottom: 1.5px solid var(--blue-border); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+    .info-strip p { font-size: 13px; font-weight: 700; color: var(--text-mid); }
+
+    .section { padding: 2.5rem 1.5rem; background: var(--bg); }
+    .section-tag { display: inline-block; background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em; padding: 4px 12px; border-radius: 6px; margin-bottom: 0.5rem; }
+    .section-title { font-size: 22px; font-weight: 900; color: var(--text-blue); margin-bottom: 1.25rem; letter-spacing: -0.4px; }
+    .steps { display: flex; flex-direction: column; gap: 0.7rem; }
+    .step-card { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius); padding: 1.1rem 1.4rem; display: flex; align-items: center; gap: 1.1rem; }
+    .step-icon { width: 44px; height: 44px; background: var(--blue-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .step-name { font-size: 14px; font-weight: 800; color: var(--text-blue); margin-bottom: 2px; }
+    .step-desc { font-size: 13px; font-weight: 600; color: var(--text-muted); line-height: 1.5; }
+
+    .mid-strip { background: var(--blue); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .mid-strip-text h3 { font-size: 17px; font-weight: 900; color: white; margin-bottom: 2px; }
+    .mid-strip-text p { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75); }
+    .mid-strip-btn { background: white; color: var(--blue); border: none; border-radius: var(--radius-sm); padding: 12px 24px; font-size: 14px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 3px 0 rgba(0,0,0,0.15); flex-shrink: 0; white-space: nowrap; }
+
+    .testi-section { padding: 2.5rem 1.5rem; background: var(--white); border-top: 1.5px solid var(--blue-border); border-bottom: 1.5px solid var(--blue-border); }
+    .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .testi-card { background: var(--bg); border: 1.5px solid var(--blue-border); border-radius: var(--radius); padding: 1.1rem; }
+    .stars { color: #F5A623; font-size: 13px; margin-bottom: 7px; }
+    .testi-quote { font-size: 13px; font-weight: 600; color: var(--text-blue); line-height: 1.6; margin-bottom: 10px; }
+    .testi-author { display: flex; align-items: center; gap: 9px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .av1 { background: var(--blue-light); color: var(--blue); } .av2 { background: #E6F4EC; color: #1A7A45; } .av3 { background: #FFF3E0; color: #B06000; } .av4 { background: #F0EAFF; color: #6B21A8; }
+    .author-name { font-size: 12px; font-weight: 800; color: var(--text-blue); }
+    .author-sub { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+
+    .guarantee { padding: 2rem 1.5rem; background: var(--bg); }
+    .g-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+    .g-item { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius-sm); padding: 0.85rem 1rem; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--text-mid); }
+    .g-check { width: 22px; height: 22px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; flex-shrink: 0; }
+
+    .footer-cta { background: var(--white); border-top: 1.5px solid var(--blue-border); border-bottom: 1.5px solid var(--blue-border); padding: 2.5rem 1.5rem; text-align: center; }
+    .footer-cta h2 { font-size: 24px; font-weight: 900; color: var(--text-blue); margin-bottom: 0.5rem; letter-spacing: -0.4px; }
+    .footer-cta p { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; }
+    .footer-cta-btn { display: inline-flex; align-items: center; background: var(--blue); color: white; border: none; border-radius: var(--radius); padding: 18px 40px; font-size: 17px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 6px 0 var(--blue-dark); transition: transform 0.1s, box-shadow 0.1s; }
+    .footer-cta-btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--blue-dark); }
+
+    footer { background: var(--white); border-top: 1.5px solid var(--blue-border); padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .footer-logo { font-size: 16px; font-weight: 900; color: var(--blue); cursor: pointer; }
+    .footer-links { display: flex; gap: 1rem; align-items: center; }
+    .footer-link { font-size: 11px; font-weight: 700; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+    .footer-note { font-size: 11px; font-weight: 600; color: var(--text-muted); max-width: 380px; line-height: 1.5; text-align: right; }
+
+    /* DIAGNOSTIC */
+    .diag-wrap { max-width: 500px; margin: 0 auto; padding: 1.5rem 1rem; }
+    .diag-progress { display: flex; gap: 4px; margin-bottom: 1.4rem; }
+    .prog-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--blue-border); transition: background 0.2s; }
+    .prog-dot.done { background: var(--blue); }
+    .step-lbl { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
+    .step-ttl { font-size: 17px; font-weight: 900; color: var(--text-blue); margin-bottom: 0.25rem; }
+    .step-sub { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 1.1rem; }
+    .sec-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin: 0.9rem 0 0.5rem; }
+    .animal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 1rem; }
+    .animal-btn { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius); padding: 0.75rem 0.3rem; cursor: pointer; text-align: center; }
+    .animal-btn:hover { border-color: var(--blue); }
+    .animal-btn.selected { border: 2px solid var(--blue); background: var(--blue-light); }
+    .a-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+    .a-name { font-size: 11px; color: var(--text-blue); font-weight: 700; }
+    .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; margin-bottom: 1rem; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 1rem; }
+    .opt-btn { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius-sm); padding: 0.7rem 0.6rem; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--text-blue); text-align: center; line-height: 1.3; font-family: 'Nunito', sans-serif; }
+    .opt-btn:hover { border-color: var(--blue); }
+    .opt-btn.selected { border: 2px solid var(--blue); background: var(--blue-light); color: var(--blue-dark); }
+    .symp-btn { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius-sm); padding: 0.65rem 0.75rem; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--text-blue); text-align: left; font-family: 'Nunito', sans-serif; }
+    .symp-btn:hover { border-color: var(--blue); }
+    .symp-btn.selected { border: 2px solid var(--blue); background: var(--blue-light); color: var(--blue-dark); }
+    .next-btn { width: 100%; padding: 0.85rem; background: var(--blue); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 4px 0 var(--blue-dark); transition: transform 0.1s, box-shadow 0.1s; margin-top: 0.5rem; }
+    .next-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--blue-dark); }
+    .next-btn:disabled { opacity: 0.3; cursor: default; transform: none; box-shadow: 0 4px 0 var(--blue-dark); }
+    .back-btn { font-size: 13px; font-weight: 700; color: var(--text-muted); background: none; border: none; cursor: pointer; margin-bottom: 1rem; padding: 0; font-family: 'Nunito', sans-serif; }
+    .diag-step { display: none; }
+    .diag-step.active { display: block; }
+    .sum-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.2rem; }
+    .sum-tag { font-size: 11px; font-weight: 700; background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius-sm); padding: 3px 9px; color: var(--text-muted); }
+    .result-card { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius); padding: 0.9rem 1rem; margin-bottom: 0.6rem; }
+    .rc-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px; }
+    .rc-val { font-size: 13px; font-weight: 600; color: var(--text-blue); line-height: 1.6; }
+    .badge { display: inline-block; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: var(--radius-sm); }
+    .badge.low { background: #EAF3DE; color: #3B6D11; }
+    .badge.medium { background: #FAEEDA; color: #854F0B; }
+    .badge.high { background: #FCEBEB; color: #A32D2D; }
+    .loading-box { display: flex; align-items: center; gap: 10px; padding: 1rem; background: var(--blue-light); border-radius: var(--radius-sm); margin-bottom: 0.75rem; }
+    .spinner { width: 18px; height: 18px; border: 2px solid var(--blue-border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 13px; font-weight: 700; color: var(--text-mid); }
+    .stream-text { font-size: 13px; font-weight: 600; color: var(--text-blue); line-height: 1.7; }
+    .disclaimer { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-top: 1rem; line-height: 1.5; }
+    .reset-btn { width: 100%; padding: 0.75rem; background: var(--white); color: var(--blue); border: 1.5px solid var(--blue-border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-top: 0.5rem; }
+    /* FIX 6 — bouton trouver un vétérinaire */
+    .vet-btn { width: 100%; padding: 0.85rem; background: #1A7A45; color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 4px 0 #0f5230; transition: transform 0.1s, box-shadow 0.1s; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .vet-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #0f5230; }
+
+    /* MENTIONS LÉGALES */
+    .legal-section { padding: 2rem 1.5rem; background: var(--bg); }
+    .legal-block { background: var(--white); border: 1.5px solid var(--blue-border); border-radius: var(--radius); padding: 1.25rem 1.4rem; margin-bottom: 1rem; }
+    .legal-block h3 { font-size: 14px; font-weight: 900; color: var(--text-blue); margin-bottom: 0.5rem; }
+    .legal-block p, .legal-block ul { font-size: 13px; font-weight: 600; color: var(--text-muted); line-height: 1.7; }
+    .legal-block ul { padding-left: 1.2rem; }
+    .legal-block li { margin-bottom: 0.25rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .nav-links .nav-link { display: none; }
+      .hero { padding: 2.5rem 1.25rem; }
+      .hero h1 { font-size: 26px; }
+      .hero-cta { font-size: 15px; padding: 16px 24px; width: 100%; justify-content: center; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1.5px solid var(--blue-border); }
+      .stat-item:last-child { border-bottom: none; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .g-grid { grid-template-columns: 1fr; }
+      .mid-strip { flex-direction: column; }
+      .mid-strip-btn { width: 100%; text-align: center; }
+      .footer-cta-btn { width: 100%; justify-content: center; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .footer-note { text-align: left; }
+      .animal-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 601px) and (max-width: 768px) {
+      .hero h1 { font-size: 30px; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .g-grid { grid-template-columns: 1fr; }
+      .mid-strip { flex-direction: column; }
+      .mid-strip-btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="site">
+  <nav>
+    <div class="logo" onclick="showPage('home')">Diag<span>Veto</span></div>
+    <div class="nav-links">
+      <span class="nav-link" id="nav-home" onclick="showPage('home')">Accueil</span>
+      <span class="nav-link" id="nav-about" onclick="showPage('about')">À propos</span>
+      <button class="nav-cta" onclick="showPage('diag')">Diagnostic gratuit</button>
+    </div>
+  </nav>
+
+  <!-- PAGE ACCUEIL -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-badge"><span class="badge-dot"></span>Disponible 24h/24 — 7j/7</div>
+      <h1>Votre animal est malade ?<br><span>Obtenez un avis en 2 minutes.</span></h1>
+      <p>Décrivez les symptômes de votre animal. Nos experts analysent le profil complet et vous orientent immédiatement.</p>
+      <button class="hero-cta" onclick="showPage('diag')">Démarrer le diagnostic gratuit</button>
+      <p class="hero-note">Gratuit · Sans inscription · Résultat immédiat</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">16</div><div class="stat-lbl">espèces prises en charge</div></div>
+      <div class="stat-item"><div class="stat-num">2 min</div><div class="stat-lbl">pour un diagnostic complet</div></div>
+      <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-lbl">nuit et week-end inclus</div></div>
+    </div>
+    <div class="info-strip"><span>🩺</span><p>Votre vétérinaire n'est pas disponible ? DiagVeto vous guide immédiatement en attendant votre rendez-vous.</p></div>
+    <div class="section">
+      <div class="section-tag">Comment ça marche</div>
+      <div class="section-title">Simple. Rapide. Fiable.</div>
+      <div class="steps">
+        <div class="step-card"><div class="step-icon">🐾</div><div><p class="step-name">Choisissez votre animal</p><p class="step-desc">Chien, chat, lapin, rongeur, oiseau, reptile… 16 espèces disponibles.</p></div></div>
+        <div class="step-card"><div class="step-icon">📋</div><div><p class="step-name">Renseignez le profil</p><p class="step-desc">Âge, sexe, stérilisation, durée des symptômes. 6 étapes guidées en quelques clics.</p></div></div>
+        <div class="step-card"><div class="step-icon">💬</div><div><p class="step-name">Recevez votre orientation</p><p class="step-desc">Pistes probables, niveau d'urgence, conseil immédiat et signes d'alerte à surveiller.</p></div></div>
+      </div>
+    </div>
+    <div class="mid-strip">
+      <div class="mid-strip-text"><h3>Prêt à lancer votre diagnostic ?</h3><p>Gratuit, sans compte, résultat en 2 minutes.</p></div>
+      <button class="mid-strip-btn" onclick="showPage('diag')">Démarrer maintenant</button>
+    </div>
+    <div class="testi-section">
+      <div class="section-tag">Avis propriétaires</div>
+      <div class="section-title" style="margin-top:0.5rem">Ils ont fait confiance à DiagVeto.</div>
+      <div class="testi-grid">
+        <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-quote">"Mon chat ne mangeait plus un dimanche soir. DiagVeto m'a orientée vers une consultation urgente — c'était bien un début d'obstruction."</p><div class="testi-author"><div class="avatar av1">SL</div><div><p class="author-name">Sophie L.</p><p class="author-sub">Chat, 6 ans</p></div></div></div>
+        <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-quote">"Très rassurant à 23h quand mon chien boitait. On m'a expliqué comment surveiller sans paniquer."</p><div class="testi-author"><div class="avatar av2">MT</div><div><p class="author-name">Marc T.</p><p class="author-sub">Chien, 4 ans</p></div></div></div>
+        <div class="testi-card"><div class="stars">★★★★☆</div><p class="testi-quote">"Résultat clair, sans jargon. J'ai su tout de suite si c'était urgent ou non pour mon lapin."</p><div class="testi-author"><div class="avatar av3">AM</div><div><p class="author-name">Amina M.</p><p class="author-sub">Lapin, 2 ans</p></div></div></div>
+        <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-quote">"Mon perroquet perdait ses plumes. On m'a tout de suite dirigé vers le bon spécialiste."</p><div class="testi-author"><div class="avatar av4">JR</div><div><p class="author-name">Julien R.</p><p class="author-sub">Perroquet, 3 ans</p></div></div></div>
+      </div>
+    </div>
+    <div class="guarantee">
+      <div class="section-tag">Nos engagements</div>
+      <div class="section-title" style="margin-top:0.5rem">Un service sérieux et responsable.</div>
+      <div class="g-grid">
+        <div class="g-item"><div class="g-check">✓</div>Données vétérinaires à jour</div>
+        <div class="g-item"><div class="g-check">✓</div>Ne remplace pas un vétérinaire</div>
+        <div class="g-item"><div class="g-check">✓</div>Aucune donnée collectée</div>
+        <div class="g-item"><div class="g-check">✓</div>100% gratuit, sans inscription</div>
+      </div>
+    </div>
+    <div class="footer-cta">
+      <h2>Votre animal a besoin de vous.<br>Agissez maintenant.</h2>
+      <p>Un diagnostic gratuit en 2 minutes, disponible à toute heure.</p>
+      <button class="footer-cta-btn" onclick="showPage('diag')">Lancer le diagnostic</button>
+    </div>
+    <footer>
+      <div class="footer-logo" onclick="showPage('home')">DiagVeto</div>
+      <div class="footer-links">
+        <span class="footer-link" onclick="showPage('legal')">Mentions légales</span>
+        <span class="footer-link" onclick="showPage('about')">À propos</span>
+      </div>
+      <div class="footer-note">Outil d'aide à l'orientation uniquement. Ne remplace pas l'avis d'un vétérinaire qualifié.</div>
+    </footer>
+  </div>
+
+  <!-- PAGE À PROPOS -->
+  <div class="page" id="page-about">
+    <div class="hero" style="padding: 3rem 2rem 2.5rem;">
+      <div class="hero-badge"><span class="badge-dot"></span>Notre mission</div>
+      <h1>Qui sommes-nous ?</h1>
+      <p>DiagVeto est un outil d'aide à l'orientation vétérinaire, conçu pour les propriétaires d'animaux qui ont besoin d'un premier avis rapide, à toute heure.</p>
+    </div>
+    <div class="section">
+      <div class="section-tag">Notre histoire</div>
+      <div class="section-title">Né d'un besoin réel</div>
+      <div class="result-card" style="margin-bottom:0">
+        <p class="rc-val">
+          DiagVeto est né d'un constat simple : quand notre animal est malade un dimanche soir ou en pleine nuit, nous nous retrouvons seuls, inquiets, sans savoir si la situation est urgente ou non.<br><br>
+          C'est pour répondre à ce besoin que nous avons créé DiagVeto — un outil gratuit, accessible 24h/24, qui analyse les symptômes de votre animal et vous guide vers la bonne décision en quelques minutes.<br><br>
+          Notre équipe réunit des passionnés d'animaux et de technologie, avec pour seul objectif : vous aider à prendre soin de vos compagnons, même quand votre vétérinaire n'est pas disponible.
+        </p>
+      </div>
+    </div>
+    <div class="mid-strip">
+      <div class="mid-strip-text">
+        <h3>Un outil, pas un remplacement</h3>
+        <p>DiagVeto oriente — votre vétérinaire diagnostique.</p>
+      </div>
+    </div>
+    <div class="section" style="background: var(--white); border-top: 1.5px solid var(--blue-border); border-bottom: 1.5px solid var(--blue-border);">
+      <div class="section-tag">Nos valeurs</div>
+      <div class="section-title">Ce qui nous guide</div>
+      <div class="steps">
+        <div class="step-card"><div class="step-icon">🎯</div><div><p class="step-name">Accessibilité</p><p class="step-desc">Un outil 100 % gratuit, sans inscription, disponible depuis n'importe quel appareil à n'importe quelle heure.</p></div></div>
+        <div class="step-card"><div class="step-icon">🔒</div><div><p class="step-name">Confidentialité</p><p class="step-desc">Aucune donnée personnelle n'est collectée ni stockée. Votre diagnostic reste entièrement privé.</p></div></div>
+        <div class="step-card"><div class="step-icon">⚕️</div><div><p class="step-name">Responsabilité</p><p class="step-desc">Nous rappelons systématiquement que DiagVeto ne remplace pas un vétérinaire. Notre rôle est d'orienter, pas de diagnostiquer.</p></div></div>
+        <div class="step-card"><div class="step-icon">⚡</div><div><p class="step-name">Technologie de pointe</p><p class="step-desc">Nous utilisons un système d'analyse avancé pour vous fournir une orientation fiable, adaptée à l'espèce et au profil de votre animal.</p></div></div>
+      </div>
+    </div>
+    <div class="guarantee" style="background: var(--bg);">
+      <div class="section-tag">Transparence</div>
+      <div class="section-title" style="margin-top:0.5rem">Ce que DiagVeto est… et n'est pas</div>
+      <div class="g-grid">
+        <div class="g-item"><div class="g-check">✓</div>Un outil d'orientation rapide</div>
+        <div class="g-item"><div class="g-check">✓</div>Disponible nuit et week-end</div>
+        <div class="g-item"><div class="g-check">✓</div>Adapté à 16 espèces animales</div>
+        <div class="g-item"><div class="g-check">✓</div>Gratuit et sans inscription</div>
+      </div>
+      <div class="g-grid" style="margin-top: 0.65rem;">
+        <div class="g-item" style="border-color: #F5C5C5; background: #FFF5F5;"><div class="g-check" style="background:#C0392B">✕</div>Un remplacement du vétérinaire</div>
+        <div class="g-item" style="border-color: #F5C5C5; background: #FFF5F5;"><div class="g-check" style="background:#C0392B">✕</div>Un outil de diagnostic médical</div>
+      </div>
+    </div>
+    <div class="footer-cta">
+      <h2>Prêt à essayer DiagVeto ?</h2>
+      <p>Un diagnostic gratuit en 2 minutes, disponible à toute heure.</p>
+      <button class="footer-cta-btn" onclick="showPage('diag')">Lancer le diagnostic</button>
+    </div>
+    <footer>
+      <div class="footer-logo" onclick="showPage('home')">DiagVeto</div>
+      <div class="footer-links">
+        <span class="footer-link" onclick="showPage('legal')">Mentions légales</span>
+      </div>
+      <div class="footer-note">Outil d'aide à l'orientation uniquement. Ne remplace pas l'avis d'un vétérinaire qualifié.</div>
+    </footer>
+  </div>
+
+  <!-- PAGE MENTIONS LÉGALES -->
+  <div class="page" id="page-legal">
+    <div class="hero" style="padding: 3rem 2rem 2rem;">
+      <div class="hero-badge">📄 Informations légales</div>
+      <h1 style="font-size:28px">Mentions légales</h1>
+      <p style="margin-bottom:0">Conformément aux dispositions légales en vigueur en France.</p>
+    </div>
+    <div class="legal-section">
+      <div class="legal-block">
+        <h3>Éditeur du site</h3>
+        <p>DiagVeto est un service en ligne édité à titre personnel.<br>
+        Contact : <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="294a46475d484a5d694d40484e5f4c5d46074f5b">[email&#160;protected]</a></strong></p>
+      </div>
+      <div class="legal-block">
+        <h3>Hébergement</h3>
+        <p>Le site est hébergé par des serveurs tiers. Pour toute demande relative à l'hébergement, veuillez contacter l'éditeur via l'adresse ci-dessus.</p>
+      </div>
+      <div class="legal-block">
+        <h3>Nature du service</h3>
+        <p>DiagVeto est un <strong>outil d'aide à l'orientation</strong>, non un outil de diagnostic médical vétérinaire. Les informations fournies sont générées par un système d'analyse automatisé et ne constituent en aucun cas un avis médical. Elles ne remplacent pas la consultation d'un vétérinaire qualifié.</p>
+      </div>
+      <div class="legal-block">
+        <h3>Données personnelles & RGPD</h3>
+        <ul>
+          <li>DiagVeto ne collecte aucune donnée personnelle identifiable.</li>
+          <li>Aucun compte utilisateur n'est requis.</li>
+          <li>Les symptômes saisis sont transmis à un service d'analyse tiers pour générer une réponse, sans stockage permanent de votre côté.</li>
+          <li>Aucun cookie de traçage n'est utilisé.</li>
+        </ul>
+      </div>
+      <div class="legal-block">
+        <h3>Limitation de responsabilité</h3>
+        <p>L'éditeur de DiagVeto décline toute responsabilité quant aux décisions prises sur la base des orientations fournies. En cas d'urgence médicale pour votre animal, contactez immédiatement un vétérinaire ou une clinique vétérinaire de garde.</p>
+      </div>
+      <div class="legal-block">
+        <h3>Propriété intellectuelle</h3>
+        <p>L'ensemble des éléments du site (textes, interface, code) est la propriété de l'éditeur. Toute reproduction sans autorisation est interdite.</p>
+      </div>
+      <div class="legal-block">
+        <h3>Contact</h3>
+        <p>Pour toute question relative aux présentes mentions légales : <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="771418190316140337131e161001120318591105">[email&#160;protected]</a></strong></p>
+      </div>
+    </div>
+    <footer>
+      <div class="footer-logo" onclick="showPage('home')">DiagVeto</div>
+      <div class="footer-links">
+        <span class="footer-link" onclick="showPage('home')">Accueil</span>
+        <span class="footer-link" onclick="showPage('about')">À propos</span>
+      </div>
+      <div class="footer-note">Outil d'aide à l'orientation uniquement. Ne remplace pas l'avis d'un vétérinaire qualifié.</div>
+    </footer>
+  </div>
+
+  <!-- PAGE DIAGNOSTIC -->
+  <div class="page" id="page-diag">
+    <div class="diag-wrap">
+      <div class="diag-progress">
+        <div class="prog-dot done" id="p1"></div>
+        <div class="prog-dot" id="p2"></div>
+        <div class="prog-dot" id="p3"></div>
+        <div class="prog-dot" id="p4"></div>
+        <div class="prog-dot" id="p5"></div>
+        <div class="prog-dot" id="p6"></div>
+      </div>
+
+      <!-- ÉTAPE 1 -->
+      <div class="diag-step active" id="ds1">
+        <p class="step-lbl">Étape 1 sur 6</p>
+        <p class="step-ttl">Quel est votre animal ?</p>
+        <p class="step-sub">Choisissez parmi les espèces disponibles</p>
+        <p class="sec-lbl">Compagnie</p>
+        <div class="animal-grid">
+          <button class="animal-btn" onclick="sel('animal',this,'Chien')"><span class="a-icon">🐶</span><span class="a-name">Chien</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Chat')"><span class="a-icon">🐱</span><span class="a-name">Chat</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Lapin')"><span class="a-icon">🐰</span><span class="a-name">Lapin</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Furet')"><span class="a-icon">🦦</span><span class="a-name">Furet</span></button>
+        </div>
+        <p class="sec-lbl">Rongeurs</p>
+        <div class="animal-grid">
+          <button class="animal-btn" onclick="sel('animal',this,'Hamster')"><span class="a-icon">🐹</span><span class="a-name">Hamster</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Cochon d\'inde')"><span class="a-icon">🐾</span><span class="a-name">Cochon d'inde</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Rat')"><span class="a-icon">🐀</span><span class="a-name">Rat</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Souris')"><span class="a-icon">🐭</span><span class="a-name">Souris</span></button>
+        </div>
+        <p class="sec-lbl">Oiseaux</p>
+        <div class="animal-grid">
+          <button class="animal-btn" onclick="sel('animal',this,'Perroquet')"><span class="a-icon">🦜</span><span class="a-name">Perroquet</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Canari')"><span class="a-icon">🐦</span><span class="a-name">Canari</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Perruche')"><span class="a-icon">🦚</span><span class="a-name">Perruche</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Autre oiseau')"><span class="a-icon">🪶</span><span class="a-name">Autre oiseau</span></button>
+        </div>
+        <p class="sec-lbl">Reptiles & aquatiques</p>
+        <div class="animal-grid">
+          <button class="animal-btn" onclick="sel('animal',this,'Tortue')"><span class="a-icon">🐢</span><span class="a-name">Tortue</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Lézard')"><span class="a-icon">🦎</span><span class="a-name">Lézard</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Serpent')"><span class="a-icon">🐍</span><span class="a-name">Serpent</span></button>
+          <button class="animal-btn" onclick="sel('animal',this,'Poisson')"><span class="a-icon">🐠</span><span class="a-name">Poisson</span></button>
+        </div>
+        <button class="next-btn" id="n1" disabled onclick="goStep(2)">Continuer →</button>
+      </div>
+
+      <!-- ÉTAPE 2 -->
+      <div class="diag-step" id="ds2">
+        <button class="back-btn" onclick="goStep(1)">← Retour</button>
+        <p class="step-lbl">Étape 2 sur 6</p>
+        <p class="step-ttl">Quel est l'âge de votre animal ?</p>
+        <p class="step-sub">L'âge influence fortement les pathologies probables</p>
+        <div class="grid3">
+          <button class="opt-btn" onclick="sel('age',this,'Moins d\'1 an')">Moins d'1 an</button>
+          <button class="opt-btn" onclick="sel('age',this,'1 à 3 ans')">1 à 3 ans</button>
+          <button class="opt-btn" onclick="sel('age',this,'3 à 7 ans')">3 à 7 ans</button>
+          <button class="opt-btn" onclick="sel('age',this,'7 à 10 ans')">7 à 10 ans</button>
+          <button class="opt-btn" onclick="sel('age',this,'Plus de 10 ans')">Plus de 10 ans</button>
+          <button class="opt-btn" onclick="sel('age',this,'Je ne sais pas')">Je ne sais pas</button>
+        </div>
+        <button class="next-btn" id="n2" disabled onclick="goStep(3)">Continuer →</button>
+      </div>
+
+      <!-- ÉTAPE 3 -->
+      <div class="diag-step" id="ds3">
+        <button class="back-btn" onclick="goStep(2)">← Retour</button>
+        <p class="step-lbl">Étape 3 sur 6</p>
+        <p class="step-ttl">Sexe et stérilisation</p>
+        <p class="step-sub">Certaines maladies sont liées au sexe ou aux hormones</p>
+        <p class="sec-lbl">Sexe</p>
+        <div class="grid2">
+          <button class="opt-btn" onclick="sel('sexe',this,'Mâle')">Mâle</button>
+          <button class="opt-btn" onclick="sel('sexe',this,'Femelle')">Femelle</button>
+        </div>
+        <p class="sec-lbl">Stérilisé ?</p>
+        <div class="grid3">
+          <button class="opt-btn" onclick="sel('steril',this,'Oui')">Oui</button>
+          <button class="opt-btn" onclick="sel('steril',this,'Non')">Non</button>
+          <button class="opt-btn" onclick="sel('steril',this,'Je ne sais pas')">Je ne sais pas</button>
+        </div>
+        <button class="next-btn" id="n3" disabled onclick="goStep(4)">Continuer →</button>
+      </div>
+
+      <!-- ÉTAPE 4 — FIX : ajout "3 à 7 jours" -->
+      <div class="diag-step" id="ds4">
+        <button class="back-btn" onclick="goStep(3)">← Retour</button>
+        <p class="step-lbl">Étape 4 sur 6</p>
+        <p class="step-ttl">Depuis quand et contexte</p>
+        <p class="step-sub">Aide à distinguer une urgence d'un problème chronique</p>
+        <p class="sec-lbl">Depuis combien de temps ?</p>
+        <div class="grid2">
+          <button class="opt-btn" onclick="sel('duree',this,'Moins de 24h')">Moins de 24h</button>
+          <button class="opt-btn" onclick="sel('duree',this,'1 à 3 jours')">1 à 3 jours</button>
+          <button class="opt-btn" onclick="sel('duree',this,'3 à 7 jours')">3 à 7 jours</button>
+          <button class="opt-btn" onclick="sel('duree',this,'Plus d\'une semaine')">Plus d'une semaine</button>
+        </div>
+        <p class="sec-lbl">Quelque chose a changé récemment ?</p>
+        <div class="grid2">
+          <button class="opt-btn" onclick="toggleCtx(this,'Changement d\'alimentation')">Changement d'alimentation</button>
+          <button class="opt-btn" onclick="toggleCtx(this,'Nouveau médicament')">Nouveau médicament</button>
+          <button class="opt-btn" onclick="toggleCtx(this,'Sortie à l\'extérieur')">Sortie à l'extérieur</button>
+          <button class="opt-btn" onclick="toggleCtx(this,'Contact avec d\'autres animaux')">Contact avec d'autres animaux</button>
+          <button class="opt-btn" onclick="toggleCtx(this,'Stress / déménagement')">Stress / déménagement</button>
+          <button class="opt-btn" onclick="toggleCtx(this,'Rien de particulier')">Rien de particulier</button>
+        </div>
+        <button class="next-btn" id="n4" disabled onclick="goStep(5)">Continuer →</button>
+      </div>
+
+      <!-- ÉTAPE 5 -->
+      <div class="diag-step" id="ds5">
+        <button class="back-btn" onclick="goStep(4)">← Retour</button>
+        <p class="step-lbl">Étape 5 sur 6</p>
+        <p class="step-ttl">Quels symptômes observez-vous ?</p>
+        <p class="step-sub">Sélectionnez tout ce qui s'applique</p>
+        <p class="sec-lbl">Digestif</p>
+        <div class="grid2">
+          <button class="symp-btn" onclick="toggleSymp(this,'Vomissements')">Vomissements</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Diarrhée')">Diarrhée</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Ne mange plus')">Ne mange plus</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Ventre gonflé')">Ventre gonflé</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Constipation')">Constipation</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Boit beaucoup plus')">Boit beaucoup plus</button>
+        </div>
+        <p class="sec-lbl">Respiratoire</p>
+        <div class="grid2">
+          <button class="symp-btn" onclick="toggleSymp(this,'Toux')">Toux</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Éternuements')">Éternuements</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Difficultés à respirer')">Difficultés à respirer</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Nez qui coule')">Nez qui coule</button>
+        </div>
+        <p class="sec-lbl">Comportement</p>
+        <div class="grid2">
+          <button class="symp-btn" onclick="toggleSymp(this,'Léthargie')">Léthargie / fatigue</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Agressivité soudaine')">Agressivité soudaine</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Désorientation')">Désorientation</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Convulsions')">Convulsions / tremblements</button>
+        </div>
+        <p class="sec-lbl">Physique</p>
+        <div class="grid2">
+          <button class="symp-btn" onclick="toggleSymp(this,'Boiterie')">Boiterie</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Démangeaisons')">Démangeaisons</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Perte de poils')">Perte de poils / plumes</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Yeux rouges')">Yeux rouges / qui coulent</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Plaie visible')">Plaie visible</button>
+          <button class="symp-btn" onclick="toggleSymp(this,'Gonflement')">Gonflement / masse</button>
+        </div>
+        <button class="next-btn" id="n5" disabled onclick="goStep(6)">Voir le diagnostic →</button>
+      </div>
+
+      <!-- ÉTAPE 6 — RÉSULTAT -->
+      <div class="diag-step" id="ds6">
+        <button class="back-btn" onclick="goStep(5)">← Retour</button>
+        <p class="step-lbl">Résultat</p>
+        <p class="step-ttl">Votre orientation</p>
+        <div class="sum-bar" id="sum-bar"></div>
+        <div class="result-card" id="card-urgence" style="display:none">
+          <p class="rc-lbl">Niveau d'urgence</p>
+          <p id="res-urgence"></p>
+        </div>
+        <div class="result-card">
+          <p class="rc-lbl">Analyse</p>
+          <div id="loading-box" class="loading-box"><div class="spinner"></div><span class="loading-text">Analyse du profil de votre animal...</span></div>
+          <p class="stream-text" id="res-stream" style="display:none"></p>
+        </div>
+        <!-- FIX 6 — bouton trouver un vétérinaire + reset -->
+        <div id="result-footer" style="display:none">
+          <button class="vet-btn" onclick="findVet()">🗺️ Trouver un vétérinaire près de chez moi</button>
+          <button class="reset-btn" onclick="resetDiag()">↺ Nouveau diagnostic</button>
+          <p class="disclaimer">⚠️ Cet outil est une aide à l'orientation uniquement. Il ne remplace pas l'avis d'un vétérinaire qualifié. En cas d'urgence, contactez votre vétérinaire immédiatement.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIX 7 — footer sur la page diagnostic -->
+    <footer style="margin-top:1rem">
+      <div class="footer-logo" onclick="showPage('home')">DiagVeto</div>
+      <div class="footer-links">
+        <span class="footer-link" onclick="showPage('legal')">Mentions légales</span>
+      </div>
+      <div class="footer-note">Outil d'aide à l'orientation uniquement. Ne remplace pas l'avis d'un vétérinaire qualifié.</div>
+    </footer>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+let d = { animal:'', age:'', sexe:'', steril:'', duree:'', ctx:[], symps:[] };
+
+// FIX 1 — updateNav appelée dans showPage
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  window.scrollTo(0, 0);
+  if (p === 'diag') resetDiag();
+  updateNav(p);
+}
+
+function updateNav(p) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const el = document.getElementById('nav-' + p);
+  if (el) el.classList.add('active');
+}
+
+function sel(key, btn, val) {
+  let group = btn.closest('.grid2,.grid3,.animal-grid');
+  if (group) group.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  d[key] = val;
+  let map = {animal:'n1', age:'n2', duree:'n4'};
+  if (key === 'sexe' || key === 'steril') {
+    if (d.sexe && d.steril) document.getElementById('n3').disabled = false;
+  } else if (map[key]) {
+    document.getElementById(map[key]).disabled = false;
+  }
+}
+
+function toggleCtx(btn, val) {
+  btn.classList.toggle('selected');
+  d.ctx.includes(val) ? d.ctx = d.ctx.filter(v=>v!==val) : d.ctx.push(val);
+  document.getElementById('n4').disabled = !d.duree;
+}
+
+function toggleSymp(btn, val) {
+  btn.classList.toggle('selected');
+  d.symps.includes(val) ? d.symps = d.symps.filter(v=>v!==val) : d.symps.push(val);
+  document.getElementById('n5').disabled = d.symps.length === 0;
+}
+
+// FIX 3 — scroll en haut à chaque changement d'étape
+function goStep(n) {
+  document.querySelectorAll('.diag-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('ds' + n).classList.add('active');
+  for (let i=1; i<=6; i++) document.getElementById('p'+i).classList.toggle('done', i<=n);
+  window.scrollTo(0, 0);
+  if (n===6) runDiag();
+}
+
+function buildSummary() {
+  let bar = document.getElementById('sum-bar');
+  bar.innerHTML = '';
+  [d.animal, d.age, d.sexe, d.steril==='Oui'?'Stérilisé':d.steril==='Non'?'Non stérilisé':'', d.duree].filter(Boolean).forEach(t => {
+    let s = document.createElement('span'); s.className='sum-tag'; s.textContent=t; bar.appendChild(s);
+  });
+}
+
+function getUrgClass(text) {
+  const t = text.toLowerCase();
+  if (t.includes('absolue')||t.includes('immédiate')||t.includes('urgent')) return 'high';
+  if (t.includes('élevée')||t.includes('rapide')||t.includes('24h')) return 'medium';
+  return 'low';
+}
+
+// FIX 6 — bouton vétérinaire
+function findVet() {
+  const query = encodeURIComponent('vétérinaire de garde près de chez moi');
+  window.open('https://www.google.com/maps/search/' + query, '_blank');
+}
+
+async function runDiag() {
+  buildSummary();
+  document.getElementById('loading-box').style.display='flex';
+  document.getElementById('res-stream').style.display='none';
+  document.getElementById('card-urgence').style.display='none';
+  document.getElementById('result-footer').style.display='none';
+
+  const prompt = `Tu es un expert en santé animale de premier secours. Voici le profil :
+- Espèce : ${d.animal}
+- Âge : ${d.age}
+- Sexe : ${d.sexe}, ${d.steril==='Oui'?'stérilisé(e)':d.steril==='Non'?'non stérilisé(e)':'statut inconnu'}
+- Durée des symptômes : ${d.duree}
+- Contexte récent : ${d.ctx.length?d.ctx.join(', '):'rien de particulier'}
+- Symptômes : ${d.symps.join(', ')}
+
+Réponds en français, de façon claire et bienveillante pour un propriétaire. Structure :
+
+URGENCE: [Faible / Modérée / Élevée / Urgence absolue] — [une phrase]
+
+PISTES PROBABLES:
+2-3 phrases sur les causes probables selon l'espèce, l'âge et les symptômes.
+
+CONSEIL IMMÉDIAT:
+Que faire dans les prochaines heures. Concret et pratique.
+
+À SURVEILLER:
+2-3 signes qui doivent déclencher une consultation urgente.
+
+RAPPEL: Cet avis est indicatif. Seul un vétérinaire peut poser un diagnostic fiable.`;
+
+  try {
+    const resp = await fetch('/api/diagnose', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages:[{role:'user',content:prompt}] })
+    });
+    document.getElementById('loading-box').style.display='none';
+    const streamEl = document.getElementById('res-stream');
+    streamEl.style.display='block';
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let full = '';
+    while(true) {
+      const {done,value} = await reader.read();
+      if(done) break;
+      const lines = decoder.decode(value).split('\n');
+      for(const line of lines) {
+        if(line.startsWith('data: ')) {
+          const js = line.slice(6).trim();
+          if(js==='[DONE]') continue;
+          try {
+            const e = JSON.parse(js);
+            if(e.type==='content_block_delta'&&e.delta?.text) {
+              full += e.delta.text;
+              streamEl.innerHTML = formatResult(full);
+            }
+          } catch(err){}
+        }
+      }
+    }
+    const urg = full.match(/URGENCE:\s*([^\n]+)/);
+    if(urg) {
+      document.getElementById('res-urgence').innerHTML = '<span class="badge '+getUrgClass(urg[1])+'">'+urg[1]+'</span>';
+      document.getElementById('card-urgence').style.display='block';
+    }
+    document.getElementById('result-footer').style.display='block';
+  } catch(e) {
+    document.getElementById('loading-box').style.display='none';
+    document.getElementById('res-stream').style.display='block';
+    document.getElementById('res-stream').textContent='Une erreur est survenue. Veuillez réessayer.';
+    document.getElementById('result-footer').style.display='block';
+  }
+}
+
+// FIX 2 — balise <em> correctement fermée
+function formatResult(t) {
+  return t
+    .replace(/URGENCE:[^\n]*/g,'')
+    .replace(/PISTES PROBABLES:/g,'<strong style="color:#0A3F6E">🔍 Pistes probables</strong><br>')
+    .replace(/CONSEIL IMMÉDIAT:/g,'<br><strong style="color:#0A3F6E">💡 Conseil immédiat</strong><br>')
+    .replace(/À SURVEILLER:/g,'<br><strong style="color:#0A3F6E">⚠️ À surveiller</strong><br>')
+    .replace(/RAPPEL:(.*?)(\n|$)/g,'<br><em style="color:#6B8FAD;font-size:12px">Rappel :$1</em><br>')
+    .replace(/\n/g,'<br>');
+}
+
+
+function resetDiag() {
+  d = {animal:'',age:'',sexe:'',steril:'',duree:'',ctx:[],symps:[]};
+  document.querySelectorAll('.animal-btn,.opt-btn,.symp-btn').forEach(b=>b.classList.remove('selected'));
+  ['n1','n2','n3','n4','n5'].forEach(id=>document.getElementById(id).disabled=true);
+  goStep(1);
+}
+
+// Init nav
+updateNav('home');
+</script>
+</body>
+</html>
